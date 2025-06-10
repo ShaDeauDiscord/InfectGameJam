@@ -6,7 +6,7 @@ import os
 const bg_color = gg.Color{135, 206, 235, 255}
 const time_for_one_frame = int(1.0 / 60.0 * 1000)
 const plants = [
-	Plant{.root, true, false, true, false, 150000, -1, 300000, -1, Seed{.root, 300000, -1}},
+	Plant{.root, true, false, true, false, 30000, -1, 60000, -1, Seed{.root, 60000, -1}},
 ]!
 const tile_cant_walk_on = [Tiles.inf_elder_tree, Tiles.elder_tree]
 
@@ -102,7 +102,7 @@ mut:
 }
 
 struct Gardener {
-	water_capacity f32 = 10
+	water_capacity f32 = 25
 mut:
 	x            int
 	y            int
@@ -164,14 +164,9 @@ fn on_frame(mut app App) {
 		} else {
 			app.tile_size = app.window_height / 20
 		}
-		app.init = false
+		//app.init = false
 	}
 	if !app.main_menu {
-		println(gg.window_size())
-		println(app.window_width)
-		println(app.window_height)
-		println(app.tile_size)
-		println(app.tile_size*20)
 		frame_time := time_to_mili(time.now())
 		for i in 0 .. app.plant_map.len {
 			for j in 0 .. app.plant_map[0].len {
@@ -813,7 +808,7 @@ fn (mut app App) root_infect(root Plant, x int, y int) {
 
 	for i in 0 .. 5 {
 		for j in 0 .. 5 {
-			infect_array[i][j] = ((rand.int_in_range(0, 10) or { 0 }) == 9)
+			infect_array[i][j] = ((rand.int_in_range(1, 11) or { 0 }) == 10)
 		}
 	}
 
