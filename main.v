@@ -16,12 +16,34 @@ enum Plant_type {
 }
 
 enum Tiles {
-	inf_elder_tree = -4
+	inf_elder_tree = -15
 	inf_robinet
 	inf_pot
-	inf_grass
+	inf_grass12
+	inf_grass11
+	inf_grass10
+	inf_grass9
+	inf_grass8
+	inf_grass7
+	inf_grass6
+	inf_grass5
+	inf_grass4
+	inf_grass3
+	inf_grass2
+	inf_grass1
 	none        = 0
-	grass       = 1
+	grass1      = 1
+	grass2
+	grass3
+	grass4
+	grass5
+	grass6
+	grass7
+	grass8
+	grass9
+	grass10
+	grass11
+	grass12
 	pot
 	robinet
 	elder_tree
@@ -52,21 +74,69 @@ mut:
 	
 
 	// IMAGES
-	grass          gg.Image
+	grass1          gg.Image
+	grass2          gg.Image
+	grass3          gg.Image
+	grass4          gg.Image
+	grass5          gg.Image
+	grass6          gg.Image
+	grass7          gg.Image
+	grass8          gg.Image
+	grass9          gg.Image
+	grass10          gg.Image
+	grass11          gg.Image
+	grass12          gg.Image
+
+	infected_grass1 gg.Image
+	infected_grass2 gg.Image
+	infected_grass3 gg.Image
+	infected_grass4 gg.Image
+	infected_grass5 gg.Image
+	infected_grass6 gg.Image
+	infected_grass7 gg.Image
+	infected_grass8 gg.Image
+	infected_grass9 gg.Image
+	infected_grass10 gg.Image
+	infected_grass11 gg.Image
+	infected_grass12 gg.Image
+
 	gardener_right       gg.Image
 	gardener_down       gg.Image
 	gardener_left      gg.Image
 	gardener_up       gg.Image
-	infected_grass gg.Image
+
+	gardener_right_shovel       gg.Image
+	gardener_down_shovel       gg.Image
+	gardener_left_shovel      gg.Image
+	gardener_up_shovel       gg.Image
+
+	gardener_right_can       gg.Image
+	gardener_down_can       gg.Image
+	gardener_left_can      gg.Image
+	gardener_up_can       gg.Image
+
+	gardener_right_plant       gg.Image
+	gardener_down_plant       gg.Image
+	gardener_left_plant      gg.Image
+	gardener_up_plant       gg.Image
+
+	gardener_right_seed       gg.Image
+	gardener_down_seed       gg.Image
+	gardener_left_seed      gg.Image
+	gardener_up_seed       gg.Image
+
 	infected_root  gg.Image
-	watering_can   gg.Image
-	pelle          gg.Image
-	robinet        gg.Image
-	pot            gg.Image
-	infected_pot   gg.Image
 	root           gg.Image
 	root_seed      gg.Image
 	blessed_root   gg.Image
+
+	watering_can   gg.Image
+	pelle          gg.Image
+	robinet        gg.Image
+
+	pot            gg.Image
+	infected_pot   gg.Image
+
 	huge_tree gg.Image
 	infect_huge_tree gg.Image
 }
@@ -132,21 +202,69 @@ fn main() {
 	)
 
 	// LOAD IMAGES
-	app.grass = app.ctx.create_image('grass.png') or { panic(err) }
+	app.grass1 = app.ctx.create_image('grass1.png') or { panic(err) }
+	app.grass2 = app.ctx.create_image('grass2.png') or { panic(err) }
+	app.grass3 = app.ctx.create_image('grass3.png') or { panic(err) }
+	app.grass4 = app.ctx.create_image('grass4.png') or { panic(err) }
+	app.grass5 = app.ctx.create_image('grass5.png') or { panic(err) }
+	app.grass6 = app.ctx.create_image('grass6.png') or { panic(err) }
+	app.grass7 = app.ctx.create_image('grass7.png') or { panic(err) }
+	app.grass8 = app.ctx.create_image('grass8.png') or { panic(err) }
+	app.grass9 = app.ctx.create_image('grass9.png') or { panic(err) }
+	app.grass10 = app.ctx.create_image('grass10.png') or { panic(err) }
+	app.grass11 = app.ctx.create_image('grass11.png') or { panic(err) }
+	app.grass12 = app.ctx.create_image('grass12.png') or { panic(err) }
+
+	app.infected_grass1 = app.ctx.create_image('infected_grass1.png') or { panic(err) }
+	app.infected_grass2 = app.ctx.create_image('infected_grass2.png') or { panic(err) }
+	app.infected_grass3 = app.ctx.create_image('infected_grass3.png') or { panic(err) }
+	app.infected_grass4 = app.ctx.create_image('infected_grass4.png') or { panic(err) }
+	app.infected_grass5 = app.ctx.create_image('infected_grass5.png') or { panic(err) }
+	app.infected_grass6 = app.ctx.create_image('infected_grass6.png') or { panic(err) }
+	app.infected_grass7 = app.ctx.create_image('infected_grass7.png') or { panic(err) }
+	app.infected_grass8 = app.ctx.create_image('infected_grass8.png') or { panic(err) }
+	app.infected_grass9 = app.ctx.create_image('infected_grass9.png') or { panic(err) }
+	app.infected_grass10 = app.ctx.create_image('infected_grass10.png') or { panic(err) }
+	app.infected_grass11 = app.ctx.create_image('infected_grass11.png') or { panic(err) }
+	app.infected_grass12 = app.ctx.create_image('infected_grass12.png') or { panic(err) }
+
 	app.gardener_right = app.ctx.create_image('gardener_right.png') or { panic(err) }
 	app.gardener_down = app.ctx.create_image('gardener_down.png') or { panic(err) }
 	app.gardener_left = app.ctx.create_image('gardener_left.png') or { panic(err) }
 	app.gardener_up = app.ctx.create_image('gardener_up.png') or { panic(err) }
-	app.infected_grass = app.ctx.create_image('infected_grass.png') or { panic(err) }
+
+	app.gardener_right_shovel = app.ctx.create_image('gardener_right_shovel.png') or { panic(err) }
+	app.gardener_down_shovel = app.ctx.create_image('gardener_down_shovel.png') or { panic(err) }
+	app.gardener_left_shovel = app.ctx.create_image('gardener_left_shovel.png') or { panic(err) }
+	app.gardener_up_shovel = app.ctx.create_image('gardener_up_shovel.png') or { panic(err) }
+
+	app.gardener_right_can = app.ctx.create_image('gardener_right_can.png') or { panic(err) }
+	app.gardener_down_can = app.ctx.create_image('gardener_down_can.png') or { panic(err) }
+	app.gardener_left_can = app.ctx.create_image('gardener_left_can.png') or { panic(err) }
+	app.gardener_up_can = app.ctx.create_image('gardener_up_can.png') or { panic(err) }
+
+	app.gardener_right_plant = app.ctx.create_image('gardener_right_plant.png') or { panic(err) }
+	app.gardener_down_plant = app.ctx.create_image('gardener_down_plant.png') or { panic(err) }
+	app.gardener_left_plant = app.ctx.create_image('gardener_left_plant.png') or { panic(err) }
+	app.gardener_up_plant = app.ctx.create_image('gardener_up_plant.png') or { panic(err) }
+
+	/*app.gardener_right = app.ctx.create_image('gardener_right_seed.png') or { panic(err) }
+	app.gardener_down = app.ctx.create_image('gardener_down_seed.png') or { panic(err) }
+	app.gardener_left = app.ctx.create_image('gardener_left_seed.png') or { panic(err) }
+	app.gardener_up = app.ctx.create_image('gardener_up_seed.png') or { panic(err) }*/
+
 	app.infected_root = app.ctx.create_image('infected_root.png') or { panic(err) }
-	app.robinet = app.ctx.create_image('robinet.png') or { panic(err) }
-	app.watering_can = app.ctx.create_image('watering_can.png') or { panic(err) }
-	app.pelle = app.ctx.create_image('pelle.png') or { panic(err) }
-	app.pot = app.ctx.create_image('pot.png') or { panic(err) }
-	app.infected_pot = app.ctx.create_image('infected_pot.png') or { panic(err) }
 	app.root = app.ctx.create_image('root.png') or { panic(err) }
 	app.blessed_root = app.ctx.create_image('blessed_root.png') or { panic(err) }
 	app.root_seed = app.ctx.create_image('root_seed.png') or { panic(err) }
+
+	app.robinet = app.ctx.create_image('robinet.png') or { panic(err) }
+	app.watering_can = app.ctx.create_image('watering_can.png') or { panic(err) }
+	app.pelle = app.ctx.create_image('pelle.png') or { panic(err) }
+
+	app.pot = app.ctx.create_image('pot.png') or { panic(err) }
+	app.infected_pot = app.ctx.create_image('infected_pot.png') or { panic(err) }
+
 	app.huge_tree = app.ctx.create_image('huge_tree.png') or { panic(err) }
 	app.infect_huge_tree = app.ctx.create_image('infected_huge_tree.png') or { panic(err) }
 
@@ -366,16 +484,64 @@ fn (app App) affiche() {
 		for i in dep_i .. fin_i {
 			for j in dep_j .. fin_j {
 				match app.map[i][j] {
-					.grass { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
-							app.tile_size, app.tile_size, app.grass) }
+					.grass1 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass1) }
+					.grass2 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass2) }
+					.grass3 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass3) }
+					.grass4 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass4) }
+					.grass5 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass5) }
+					.grass6 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass6) }
+					.grass7 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass7) }
+					.grass8 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass8) }
+					.grass9 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass9) }
+					.grass10 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass10) }
+					.grass11 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass11) }
+					.grass12 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.grass12) }
+
+					.inf_grass1 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass1) }
+					.inf_grass2 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass2) }
+					.inf_grass3 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass3) }
+					.inf_grass4 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass4) }
+					.inf_grass5 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass5) }
+					.inf_grass6 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass6) }
+					.inf_grass7 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass7) }
+					.inf_grass8 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass8) }
+					.inf_grass9 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass9) }
+					.inf_grass10 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass10) }
+					.inf_grass11 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass11) }
+					.inf_grass12 { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
+							app.tile_size, app.tile_size, app.infected_grass12) }
+
 					.robinet { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
 							app.tile_size, app.tile_size, app.robinet) }
+
 					.pot { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i, app.tile_size,
 							app.tile_size, app.pot) }
 					.inf_pot { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i, app.tile_size,
 							app.tile_size, app.infected_pot) }
-					.inf_grass { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
-							app.tile_size, app.tile_size, app.infected_grass) }
+
 					.inf_elder_tree { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
 							app.tile_size, app.tile_size, app.infect_huge_tree) }
 					.elder_tree { app.ctx.draw_image(app.tile_size * j - app.tile_size * dep_j, app.tile_size * i - app.tile_size * dep_i,
@@ -420,30 +586,38 @@ fn (app App) affiche() {
 				}
 			}
 		}
-		match app.player.orientation {
-			0 {app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 8 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 8 - app.tile_size * dep_i,
-				int( f32(app.tile_size) / (1.5) ), int( f32(app.tile_size) / (1.5) ), app.gardener_right)}
-			1 {app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 8 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 8 - app.tile_size * dep_i,
-				int( f32(app.tile_size) / (1.5) ), int( f32(app.tile_size) / (1.5) ), app.gardener_down)}
-			2 {app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 8 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 8 - app.tile_size * dep_i,
-				int( f32(app.tile_size) / (1.5) ), int( f32(app.tile_size) / (1.5) ), app.gardener_left)}
-			3 {app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 8 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 8 - app.tile_size * dep_i,
-				int( f32(app.tile_size) / (1.5) ), int( f32(app.tile_size) / (1.5) ), app.gardener_up)}
-			else {}
-		}
+
 		match app.player.tool {
 			1 {
-				app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-					app.tile_size / 3, app.tile_size / 3, app.watering_can)
+				match app.player.orientation {
+					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_can)}
+					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_can)}
+					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_can)}
+					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_can)}
+					else {}
+				}
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 					app.tile_size * 2, app.tile_size * 2, app.watering_can)
-				app.ctx.draw_rect_filled(app.window_width - app.tile_size * 3, app.tile_size + (10 - app.player.water_in_can) * app.tile_size * 2 / 10,
-					app.tile_size * 2, app.tile_size * 2 - (10 - app.player.water_in_can) * app.tile_size * 2 / 10, gg.Color{50, 100, 200, 100})
-				
+				app.ctx.draw_rect_filled(app.window_width - app.tile_size * 3, app.tile_size + (25 - app.player.water_in_can) * app.tile_size * 2 / 25,
+					app.tile_size * 2, app.tile_size * 2 - (25 - app.player.water_in_can) * app.tile_size * 2 / 25, gg.Color{50, 100, 200, 100})
+
 			}
 			2 {
-				app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-					app.tile_size / 3, app.tile_size / 3, app.pelle)
+				match app.player.orientation {
+					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_shovel)}
+					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_shovel)}
+					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_shovel)}
+					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_shovel)}
+					else {}
+				}
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 					app.tile_size * 2, app.tile_size * 2, app.pelle)
 			}
@@ -452,30 +626,44 @@ fn (app App) affiche() {
 		match app.player.plant_item.id {
 			.root {
 				if app.player.plant_item.infected {
-					app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-						app.tile_size / 2, app.tile_size / 2, app.infected_root)
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 						app.tile_size * 2, app.tile_size * 2, app.infected_root)
 				} else if app.player.plant_item.blessed {
-					app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-						app.tile_size / 2, app.tile_size / 2, app.blessed_root)
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 						app.tile_size * 2, app.tile_size * 2, app.blessed_root)
 				} else {
-					app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-						app.tile_size / 2, app.tile_size / 2, app.root)
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 						app.tile_size * 2, app.tile_size * 2, app.root)
+				}
+				match app.player.orientation {
+					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_plant)}
+					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_plant)}
+					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_plant)}
+					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_plant)}
+					else {}
 				}
 			}
 			else {}
 		}
 		match app.player.seed_item.parent {
 			.root {
-				app.ctx.draw_image(app.tile_size * app.player.x + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * app.player.y + app.tile_size / 2 - app.tile_size * dep_i,
-					app.tile_size / 2, app.tile_size / 2, app.root_seed)
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 					app.tile_size * 2, app.tile_size * 2, app.root_seed)
+				match app.player.orientation {
+					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_seed)}
+					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_seed)}
+					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_seed)}
+					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_seed)}
+					else {}
+				}
 			}
 			else {}
 		}
@@ -648,9 +836,8 @@ fn (mut app App) tile_infect(x int, y int) {
 		&& (x >= app.map[0].len - 1 || int(app.map[y][x + 1]) < 0)
 		&& (y <= 0 || int(app.map[y - 1][x]) < 0)
 		&& (y <= app.map.len - 1 || int(app.map[y + 1][x]) < 0)) {
-		match rand.int_in_range(1, 1_001) or { 0 } {
-			1...985 {}
-			986...993 {
+		match rand.int_in_range(1, 5_001) or { 0 } {
+			1...8 {
 				match rand.int_in_range(1, 4) or { 0 } {
 					1 {
 						if y > 0 && int(app.map[y - 1][x]) > 0 {
@@ -675,7 +862,7 @@ fn (mut app App) tile_infect(x int, y int) {
 					else {}
 				}
 			}
-			994...997 {
+			9...12 {
 				match rand.int_in_range(1, 6) or { 0 } {
 					1 {
 						if y > 0 && int(app.map[y - 1][x]) > 0 {
@@ -728,7 +915,7 @@ fn (mut app App) tile_infect(x int, y int) {
 					else {}
 				}
 			}
-			998...999 {
+			13...14 {
 				match rand.int_in_range(1, 4) or { 0 } {
 					1 {
 						if y > 0 && int(app.map[y - 1][x]) > 0 {
@@ -777,7 +964,7 @@ fn (mut app App) tile_infect(x int, y int) {
 					else {}
 				}
 			}
-			1_000...1_000 {
+			15...15 {
 				if y > 0 && int(app.map[y - 1][x]) > 0 {
 					app.map[y - 1][x] = unsafe { Tiles(-int(app.map[y - 1][x])) }
 				}
@@ -1066,7 +1253,7 @@ fn (mut app App) init_map () {
 					if tile_is_infected_pot {
 						app.map[i] << Tiles.inf_pot
 					} else {
-						app.map[i] << Tiles.inf_grass
+						app.map[i] << unsafe{ Tiles(rand.int_in_range(-12, 0) or {0}) } // infected grass 1 to 12 randomly
 					}
 				}
 			}
