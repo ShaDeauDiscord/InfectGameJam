@@ -8,7 +8,7 @@ const time_for_one_frame = int(1.0 / 60.0 * 1000)
 const plants = [
 	Plant{.root, true, false, true, false, 30000, -1, 60000, -1, Seed{.root, 60000, -1}},
 ]!
-const tile_cant_walk_on = [Tiles.inf_elder_tree, Tiles.elder_tree]
+const tile_cant_walk_on = [Tiles.inf_elder_tree, Tiles.elder_tree, Tiles.none]
 
 enum Plant_type {
 	none = -1
@@ -139,6 +139,11 @@ mut:
 
 	huge_tree gg.Image
 	infect_huge_tree gg.Image
+
+	main_hub gg.Image
+	hub_pot gg.Image
+
+	lake gg.Image
 }
 
 struct Plant {
@@ -180,7 +185,7 @@ mut:
 	plant_item   Plant
 	seed_item    Seed
 	tool         u8
-	water_in_can f32 = 10
+	water_in_can f32 = 25
 }
 
 fn main() {
@@ -268,12 +273,19 @@ fn main() {
 	app.huge_tree = app.ctx.create_image('huge_tree.png') or { panic(err) }
 	app.infect_huge_tree = app.ctx.create_image('infected_huge_tree.png') or { panic(err) }
 
+	app.main_hub = app.ctx.create_image('main_hub.png') or { panic(err) }
+	app.hub_pot = app.ctx.create_image('hub_pot.png') or { panic(err) }
+
+	app.lake = app.ctx.create_image('lake.png') or { panic(err) }
+
 
 	// lancement du programme/de la fenêtre
 	app.ctx.run()
 }
 
 fn on_frame(mut app App) {
+	println(app.player.x)
+	println(app.player.y)
 	if app.init {
 		app.window_width = gg.window_size().width
 		app.window_height = gg.window_size().height
@@ -548,6 +560,18 @@ fn (app App) affiche() {
 							app.tile_size, app.tile_size, app.huge_tree) }
 					else {}
 				}
+			}
+		}
+		if dep_i == 0 && dep_j == 0 {
+			app.ctx.draw_image(app.tile_size/3, 0, 19 * app.tile_size, 19 * app.tile_size, app.main_hub)
+			app.ctx.draw_image(5 * app.tile_size, 12 * app.tile_size, app.tile_size, app.tile_size, app.hub_pot)
+			app.ctx.draw_image(8 * app.tile_size, 14 * app.tile_size, app.tile_size, app.tile_size, app.hub_pot)
+			app.ctx.draw_image(11 * app.tile_size, 14 * app.tile_size, app.tile_size, app.tile_size, app.hub_pot)
+			app.ctx.draw_image(14 * app.tile_size, 12 * app.tile_size, app.tile_size, app.tile_size, app.hub_pot)
+			app.ctx.draw_image(13 * app.tile_size + app.tile_size / 2, 9 * app.tile_size, 3 * app.tile_size, app.tile_size * 3, app.lake)
+		}
+		for i in dep_i .. fin_i {
+			for j in dep_j .. fin_j {
 				match app.plant_map[i][j].id {
 					.root {
 						mut pot := 0
@@ -586,6 +610,8 @@ fn (app App) affiche() {
 				}
 			}
 		}
+
+
 
 
 		mut item := false
@@ -1261,9 +1287,9 @@ fn (mut app App) init_map () {
 			for j in 0 .. 100 {
 				app.plant_map[i] << Plant{}
 				app.seed_map[i] << Seed{}
-				if dist_squared(j, i, app.blessed_huge_tree.x, app.blessed_huge_tree.y) <= app.blessed_huge_tree.radius_squared {
+				/*if dist_squared(j, i, app.blessed_huge_tree.x, app.blessed_huge_tree.y) <= app.blessed_huge_tree.radius_squared {
 					app.map[i] << Tiles.elder_tree
-				} else if dist_squared(j, i, app.infected_huge_tree.x, app.infected_huge_tree.y) <= app.infected_huge_tree.radius_squared {
+				} else */if dist_squared(j, i, app.infected_huge_tree.x, app.infected_huge_tree.y) <= app.infected_huge_tree.radius_squared {
 					app.map[i] << Tiles.inf_elder_tree
 				} else {
 					mut tile_is_infected_pot := false
@@ -1278,11 +1304,43 @@ fn (mut app App) init_map () {
 				}
 			}
 		}
+
+		app.map[10][5] = .none
+		app.map[10][6] = .none
+		app.map[10][7] = .none
+		app.map[11][7] = .none
+		app.map[12][7] = .none
+		app.map[12][6] = .none
+		app.map[11][8] = .none
+		app.map[11][9] = .none
+		app.map[11][10] = .none
+		app.map[11][11] = .none
+		app.map[11][12] = .none
+		app.map[12][12] = .none
+		app.map[12][13] = .none
+		app.map[10][12] = .none
+		app.map[9][11] = .none
+		app.map[9][10] = .none
+		app.map[9][8] = .none
+		app.map[9][7] = .none
+		app.map[9][14] = .none
+		app.map[10][14] = .none
+		app.map[10][15] = .none
+		app.map[11][14] = .none
+		app.map[11][13] = .none
+
 		app.map[7][12] = .robinet
-		app.map[6][6] = .pot
-		app.map[12][6] = .pot
-		app.map[12][12] = .pot
-		app.map[6][12] = .pot
+		app.map[9][13] = .robinet
+		app.map[10][13] = .robinet
+		app.map[9][15] = .robinet
+		app.map[10][16] = .robinet
+		app.map[11][16] = .robinet
+		app.map[11][15] = .robinet
+
+		app.map[12][5] = .pot
+		app.map[14][8] = .pot
+		app.map[14][11] = .pot
+		app.map[12][14] = .pot
 		
 		app.plant_map[09][25] = plants[int(Plant_type.root)]
 		
