@@ -587,39 +587,44 @@ fn (app App) affiche() {
 			}
 		}
 
+
+		mut item := false
+
 		match app.player.tool {
 			1 {
 				match app.player.orientation {
 					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_can)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_can)}
 					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_can)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_can)}
 					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_can)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_can)}
 					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_can)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_can)}
 					else {}
 				}
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 					app.tile_size * 2, app.tile_size * 2, app.watering_can)
 				app.ctx.draw_rect_filled(app.window_width - app.tile_size * 3, app.tile_size + (25 - app.player.water_in_can) * app.tile_size * 2 / 25,
 					app.tile_size * 2, app.tile_size * 2 - (25 - app.player.water_in_can) * app.tile_size * 2 / 25, gg.Color{50, 100, 200, 100})
+				item = true
 
 			}
 			2 {
 				match app.player.orientation {
 					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_shovel)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_shovel)}
 					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_shovel)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_shovel)}
 					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_shovel)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_shovel)}
 					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_shovel)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_shovel)}
 					else {}
 				}
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
 					app.tile_size * 2, app.tile_size * 2, app.pelle)
+				item = true
 			}
 			else {}
 		}
@@ -637,15 +642,16 @@ fn (app App) affiche() {
 				}
 				match app.player.orientation {
 					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_plant)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_plant)}
 					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_plant)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_plant)}
 					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_plant)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_plant)}
 					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_plant)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_plant)}
 					else {}
 				}
+				item = true
 			}
 			else {}
 		}
@@ -655,17 +661,31 @@ fn (app App) affiche() {
 					app.tile_size * 2, app.tile_size * 2, app.root_seed)
 				match app.player.orientation {
 					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_right_seed)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_seed)}
 					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_down_seed)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_seed)}
 					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_left_seed)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_seed)}
 					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, int( f32(app.tile_size) * 1.5 ), app.gardener_up_seed)}
+						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_seed)}
 					else {}
 				}
+				item = true
 			}
 			else {}
+		}
+		if !item {
+			match app.player.orientation {
+				0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+					app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right)}
+				1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+					app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down)}
+				2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+					app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left)}
+				3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+					app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up)}
+				else {}
+			}
 		}
 	}
 }
