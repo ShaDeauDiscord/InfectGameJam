@@ -6,7 +6,7 @@ import os
 const bg_color = gg.Color{135, 206, 235, 255}
 const time_for_one_frame = int(1.0 / 60.0 * 1000)
 const plants = [
-	Plant{.root, true, false, true, false, 30000, -1, 60000, -1, Seed{.root, 60000, -1}},
+	Plant{.root, 0, true, false, true, false, 30000, -1, 60000, -1, Seed{.root, 60000, -1}},
 ]!
 const tile_cant_walk_on = [Tiles.inf_elder_tree, Tiles.elder_tree, Tiles.none]
 
@@ -120,15 +120,21 @@ mut:
 	gardener_left_plant      gg.Image
 	gardener_up_plant       gg.Image
 
+	gardener_right_infected_plant       gg.Image
+	gardener_down_infected_plant       gg.Image
+	gardener_left_infected_plant      gg.Image
+	gardener_up_infected_plant       gg.Image
+
 	gardener_right_seed       gg.Image
 	gardener_down_seed       gg.Image
 	gardener_left_seed      gg.Image
 	gardener_up_seed       gg.Image
 
-	infected_root  gg.Image
-	root           gg.Image
-	root_seed      gg.Image
-	blessed_root   gg.Image
+	infected_tree gg.Image
+	tree gg.Image
+	blessed_tree gg.Image
+	blessed_tree_bird gg.Image
+	tree_seed gg.Image
 
 	watering_can   gg.Image
 	pelle          gg.Image
@@ -141,6 +147,7 @@ mut:
 	infect_huge_tree gg.Image
 
 	main_hub gg.Image
+	tree_on_top gg.Image
 	hub_pot gg.Image
 
 	lake gg.Image
@@ -149,6 +156,7 @@ mut:
 struct Plant {
 mut:
 	id                 Plant_type = .none
+	state int
 	infected           bool
 	blessed            bool
 	collision          bool
@@ -253,15 +261,21 @@ fn main() {
 	app.gardener_left_plant = app.ctx.create_image('gardener_left_plant.png') or { panic(err) }
 	app.gardener_up_plant = app.ctx.create_image('gardener_up_plant.png') or { panic(err) }
 
-	/*app.gardener_right = app.ctx.create_image('gardener_right_seed.png') or { panic(err) }
-	app.gardener_down = app.ctx.create_image('gardener_down_seed.png') or { panic(err) }
-	app.gardener_left = app.ctx.create_image('gardener_left_seed.png') or { panic(err) }
-	app.gardener_up = app.ctx.create_image('gardener_up_seed.png') or { panic(err) }*/
+	app.gardener_right_infected_plant = app.ctx.create_image('gardener_right_infected_plant.png') or { panic(err) }
+	app.gardener_down_infected_plant = app.ctx.create_image('gardener_down_infected_plant.png') or { panic(err) }
+	app.gardener_left_infected_plant = app.ctx.create_image('gardener_left_infected_plant.png') or { panic(err) }
+	app.gardener_up_infected_plant = app.ctx.create_image('gardener_up_infected_plant.png') or { panic(err) }
 
-	app.infected_root = app.ctx.create_image('infected_root.png') or { panic(err) }
-	app.root = app.ctx.create_image('root.png') or { panic(err) }
-	app.blessed_root = app.ctx.create_image('blessed_root.png') or { panic(err) }
-	app.root_seed = app.ctx.create_image('root_seed.png') or { panic(err) }
+	app.gardener_right_seed = app.ctx.create_image('gardener_right_seed.png') or { panic(err) }
+	app.gardener_down_seed = app.ctx.create_image('gardener_down_seed.png') or { panic(err) }
+	app.gardener_left_seed = app.ctx.create_image('gardener_left_seed.png') or { panic(err) }
+	app.gardener_up_seed = app.ctx.create_image('gardener_up_seed.png') or { panic(err) }
+
+	app.infected_tree = app.ctx.create_image('infected_tree.png') or { panic(err) }
+	app.tree = app.ctx.create_image('tree.png') or { panic(err) }
+	app.blessed_tree = app.ctx.create_image('blessed_tree.png') or { panic(err) }
+	app.blessed_tree_bird = app.ctx.create_image('blessed_tree_bird.png') or { panic(err) }
+	app.tree_seed = app.ctx.create_image('tree_seed.png') or { panic(err) }
 
 	app.robinet = app.ctx.create_image('robinet.png') or { panic(err) }
 	app.watering_can = app.ctx.create_image('watering_can.png') or { panic(err) }
@@ -274,6 +288,7 @@ fn main() {
 	app.infect_huge_tree = app.ctx.create_image('infected_huge_tree.png') or { panic(err) }
 
 	app.main_hub = app.ctx.create_image('main_hub.png') or { panic(err) }
+	app.tree_on_top = app.ctx.create_image('tree_on_top.png') or { panic(err) }
 	app.hub_pot = app.ctx.create_image('hub_pot.png') or { panic(err) }
 
 	app.lake = app.ctx.create_image('lake.png') or { panic(err) }
@@ -284,8 +299,6 @@ fn main() {
 }
 
 fn on_frame(mut app App) {
-	println(app.player.x)
-	println(app.player.y)
 	if app.init {
 		app.window_width = gg.window_size().width
 		app.window_height = gg.window_size().height
@@ -322,13 +335,17 @@ fn on_frame(mut app App) {
 							app.plant_map[i][j].blessed = false
 						}
 					}
+					if frame_time - app.last_frame > 30000 {
+						app.plant_map[i][j].state = (app.plant_map[i][j].state + (rand.int_in_range(1, 11) or {0}) / 10) % 2
+					}
 				}
 				if app.seed_map[i][j].parent != .none {
 					if app.seed_map[i][j].time_of_planting != -1 {
 						if frame_time - app.seed_map[i][j].time_of_planting >= app.seed_map[i][j].grow_time {
 							app.plant_map[i][j] = plants[int(Plant_type.root)]
 							app.plant_map[i][j].infected = false
-							app.plant_map[i][j].blessed = true
+							app.plant_map[i][j].blessed = (rand.int_in_range(0, 2) or {0} == 0)
+							app.plant_map[i][j].state = (rand.int_in_range(1, 11) or {0}) / 10
 							app.seed_map[i][j] = Seed{}
 						}
 						if int(app.map[i][j]) < 0 {
@@ -579,19 +596,24 @@ fn (app App) affiche() {
 							pot = app.tile_size / 4
 						}
 						if app.plant_map[i][j].infected {
-							app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * i + pot - app.tile_size * dep_i,
-								app.tile_size - 2 * pot, app.tile_size - 2 * pot, app.infected_root)
+							app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * (i) + pot - app.tile_size * dep_i,
+								app.tile_size - 2 * pot, (app.tile_size - 2 * pot), app.infected_tree)
 						} else if app.plant_map[i][j].blessed {
-							app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * i + pot - app.tile_size * dep_i,
-								app.tile_size - 2 * pot, app.tile_size - 2 * pot, app.blessed_root)
+							if app.plant_map[i][j].state == 0 {
+								app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * (i) + pot - app.tile_size * dep_i,
+									app.tile_size - 2 * pot, (app.tile_size - 2 * pot), app.blessed_tree)
+							} else {
+								app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * (i) + pot - app.tile_size * dep_i,
+									app.tile_size - 2 * pot, (app.tile_size - 2 * pot), app.blessed_tree_bird)
+							}
 						} else {
-							app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * i + pot - app.tile_size * dep_i,
-								app.tile_size - 2 * pot, app.tile_size - 2 * pot, app.root)
+							app.ctx.draw_image(app.tile_size * j + pot - app.tile_size * dep_j, app.tile_size * (i) + pot - app.tile_size * dep_i,
+								app.tile_size - 2 * pot, (app.tile_size - 2 * pot), app.tree)
 						}
 						if app.plant_map[i][j].potted && !app.plant_map[i][j].infected
 							&& app.plant_map[i][j].time_of_last_seed == -1 {
 							app.ctx.draw_image(app.tile_size * j + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * i + app.tile_size / 16 - app.tile_size * dep_i,
-								app.tile_size / 2, app.tile_size / 2, app.root_seed)
+								app.tile_size / 2, app.tile_size / 2, app.tree_seed)
 						}
 					}
 					else {}
@@ -600,10 +622,10 @@ fn (app App) affiche() {
 					.root {
 						if app.plant_map[i][j].id != .none {
 							app.ctx.draw_image(app.tile_size * j + app.tile_size / 2 - app.tile_size * dep_j, app.tile_size * i + app.tile_size / 16 - app.tile_size * dep_i,
-								app.tile_size / 2, app.tile_size / 2, app.root_seed)
+								app.tile_size / 2, app.tile_size / 2, app.tree_seed)
 						} else {
 							app.ctx.draw_image(app.tile_size * j + app.tile_size / 4 - app.tile_size * dep_j, app.tile_size * i + app.tile_size / 4 - app.tile_size * dep_i,
-								app.tile_size / 2, app.tile_size / 2, app.root_seed)
+								app.tile_size / 2, app.tile_size / 2, app.tree_seed)
 						}
 					}
 					else {}
@@ -637,20 +659,22 @@ fn (app App) affiche() {
 
 			}
 			2 {
-				match app.player.orientation {
-					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_shovel)}
-					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_shovel)}
-					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_shovel)}
-					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_shovel)}
-					else {}
+				if app.player.plant_item.id == .none {
+					match app.player.orientation {
+						0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_shovel)}
+						1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_shovel)}
+						2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_shovel)}
+						3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_shovel)}
+						else {}
+					}
+					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
+						app.tile_size * 2, app.tile_size * 2, app.pelle)
+					item = true
 				}
-				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
-					app.tile_size * 2, app.tile_size * 2, app.pelle)
-				item = true
 			}
 			else {}
 		}
@@ -658,24 +682,46 @@ fn (app App) affiche() {
 			.root {
 				if app.player.plant_item.infected {
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
-						app.tile_size * 2, app.tile_size * 2, app.infected_root)
+						app.tile_size * 2, app.tile_size * 2, app.infected_tree)
+					match app.player.orientation {
+						0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_infected_plant)}
+						1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_infected_plant)}
+						2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_infected_plant)}
+						3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_infected_plant)}
+						else {}
+					}
 				} else if app.player.plant_item.blessed {
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
-						app.tile_size * 2, app.tile_size * 2, app.blessed_root)
+						app.tile_size * 2, app.tile_size * 2, app.blessed_tree)
+					match app.player.orientation {
+						0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_plant)}
+						1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_plant)}
+						2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_plant)}
+						3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_plant)}
+						else {}
+					}
 				} else {
 					app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
-						app.tile_size * 2, app.tile_size * 2, app.root)
-				}
-				match app.player.orientation {
-					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_plant)}
-					1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_plant)}
-					2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_plant)}
-					3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
-						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_plant)}
-					else {}
+						app.tile_size * 2, app.tile_size * 2, app.tree)
+					match app.player.orientation {
+						0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_plant)}
+						1 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_down_plant)}
+						2 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_left_plant)}
+						3 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
+							app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up_plant)}
+						else {}
+					}
 				}
 				item = true
 			}
@@ -684,7 +730,7 @@ fn (app App) affiche() {
 		match app.player.seed_item.parent {
 			.root {
 				app.ctx.draw_image(app.window_width - app.tile_size * 3, app.tile_size,
-					app.tile_size * 2, app.tile_size * 2, app.root_seed)
+					app.tile_size * 2, app.tile_size * 2, app.tree_seed)
 				match app.player.orientation {
 					0 {app.ctx.draw_image(app.tile_size * app.player.x - app.tile_size * dep_j, app.tile_size * app.player.y - app.tile_size/2 - app.tile_size * dep_i ,
 						app.tile_size, app.tile_size + app.tile_size/2, app.gardener_right_seed)}
@@ -712,6 +758,9 @@ fn (app App) affiche() {
 					app.tile_size, app.tile_size + app.tile_size/2, app.gardener_up)}
 				else {}
 			}
+		}
+		if dep_i == 0 && dep_j == 0 {
+			app.ctx.draw_image(app.tile_size/3, 0, 19 * app.tile_size, 19 * app.tile_size, app.tree_on_top)
 		}
 	}
 }
@@ -798,6 +847,7 @@ fn (mut g Gardener) pickup_plant(mut app App) {
 	if t[0] >= 0 && t[1] >= 0 && t[0] < app.map[0].len && t[1] < app.map.len {
 		if g.plant_item.id == .none && app.plant_map[t[1]][t[0]].id != .none {
 			g.plant_item = app.plant_map[t[1]][t[0]]
+			g.plant_item.state = 0
 			app.plant_map[t[1]][t[0]].potted = false
 			g.plant_item.time_of_potting = -1
 			app.plant_map[t[1]][t[0]].id = .none
@@ -1069,27 +1119,78 @@ fn (mut app App) plante_bless (plante Plant, x int, y int) {
 }
 
 fn (mut app App) root_bless (root Plant, x int, y int) {
-	mut infect_array := [5][5]bool{}
+	if root.state == 0 {
+		mut infect_array := [5][5]bool{}
 
-	for i in 0 .. 5 {
-		for j in 0 .. 5 {
-			infect_array[i][j] = ((rand.int_in_range(1, 11) or { 0 }) == 10)
-		}
-	}
-
-	infect_array[0][0] = false
-	infect_array[0][4] = false
-	infect_array[4][0] = false
-	infect_array[4][4] = false
-	infect_array[2][2] = false
-
-	for i in 0 .. 5 {
-		for j in 0 .. 5 {
-			if x + j - 2 < app.map[0].len && x + j - 2 >= 0 && y + i - 2 < app.map.len
-				&& y + i - 2 >= 0 && int(app.map[y + i - 2][x + j - 2]) < 0 && infect_array[i][j] {
-				app.map[y + i - 2][x + j - 2] = unsafe { Tiles(-int(app.map[y + i - 2][x + j - 2])) }
+		for i in 0 .. 5 {
+			for j in 0 .. 5 {
+				infect_array[i][j] = ((rand.int_in_range(1, 16) or { 0 }) == 1)
 			}
 		}
+
+		infect_array[0][0] = false
+		infect_array[0][4] = false
+		infect_array[4][0] = false
+		infect_array[4][4] = false
+		infect_array[2][2] = false
+
+		for i in 0 .. 5 {
+			for j in 0 .. 5 {
+				if x + j - 2 < app.map[0].len && x + j - 2 >= 0 && y + i - 2 < app.map.len
+					&& y + i - 2 >= 0 && int(app.map[y + i - 2][x + j - 2]) < 0 && infect_array[i][j] {
+					app.map[y + i - 2][x + j - 2] = unsafe { Tiles(-int(app.map[y + i - 2][x + j - 2])) }
+				}
+			}
+		}
+	} else if root.state == 1 {
+		mut infect_array_row := [3][9]bool{}
+
+		for i in 0 .. 3 {
+			for j in 0 .. 9 {
+				infect_array_row[i][j] = ((rand.int_in_range(1, 16) or { 0 }) == 1)
+			}
+		}
+
+		for i in 0 .. 3 {
+			for j in 0 .. 9 {
+				if x + j - 4 < app.map[0].len && x + j - 4 >= 0 && y + i - 1 < app.map.len
+					&& y + i - 1 >= 0 && int(app.map[y + i - 1][x + j - 4]) < 0 && infect_array_row[i][j] {
+					app.map[y + i - 1][x + j - 4] = unsafe { Tiles(-int(app.map[y + i - 1][x + j - 4])) }
+				}
+			}
+		}
+
+
+		mut infect_array_column := [9][3]bool{}
+
+		for i in 0 .. 9 {
+			for j in 0 .. 3 {
+				infect_array_column[i][j] = ((rand.int_in_range(1, 16) or { 0 }) == 1)
+			}
+		}
+
+		for i in 0 .. 9 {
+			for j in 0 .. 3 {
+				if x + j - 1 < app.map[0].len && x + j - 1 >= 0 && y + i - 4 < app.map.len
+					&& y + i - 4 >= 0 && int(app.map[y + i - 4][x + j - 1]) < 0 && infect_array_column[i][j] {
+					app.map[y + i - 4][x + j - 1] = unsafe { Tiles(-int(app.map[y + i - 4][x + j - 1])) }
+				}
+			}
+		}
+
+		if x - 2 >= 0 && y - 2 >= 0 && int(app.map[y - 2][x - 2]) < 0 && ((rand.int_in_range(1, 16) or { 0 }) == 1) {
+			app.map[y - 2][x - 2] = unsafe { Tiles(-int(app.map[y - 2][x  - 2])) }
+		}
+		if x - 2 >= 0 && y + 2 < app.map.len && int(app.map[y + 2][x - 2]) < 0 && ((rand.int_in_range(1, 16) or { 0 }) == 1) {
+			app.map[y + 2][x - 2] = unsafe { Tiles(-int(app.map[y + 2][x  - 2])) }
+		}
+		if x + 2 < app.map[0].len && y - 2 >= 0 && int(app.map[y - 2][x + 2]) < 0 && ((rand.int_in_range(1, 16) or { 0 }) == 1) {
+			app.map[y - 2][x + 2] = unsafe { Tiles(-int(app.map[y - 2][x  + 2])) }
+		}
+		if x + 2 < app.map[0].len && y + 2 < app.map.len && int(app.map[y + 2][x + 2]) < 0 && ((rand.int_in_range(1, 16) or { 0 }) == 1) {
+			app.map[y + 2][x + 2] = unsafe { Tiles(-int(app.map[y + 2][x  + 2])) }
+		}
+
 	}
 }
 
@@ -1321,6 +1422,7 @@ fn (mut app App) init_map () {
 		app.map[10][12] = .none
 		app.map[9][11] = .none
 		app.map[9][10] = .none
+		app.map[9][9] = .none
 		app.map[9][8] = .none
 		app.map[9][7] = .none
 		app.map[9][14] = .none
