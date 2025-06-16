@@ -344,7 +344,7 @@ fn on_frame(mut app App) {
 						if frame_time - app.seed_map[i][j].time_of_planting >= app.seed_map[i][j].grow_time {
 							app.plant_map[i][j] = plants[int(Plant_type.root)]
 							app.plant_map[i][j].infected = false
-							app.plant_map[i][j].blessed = (rand.int_in_range(0, 2) or {0} == 0)
+							app.plant_map[i][j].blessed = (rand.int_in_range(0, 4) or {0} != 0)
 							app.plant_map[i][j].state = (rand.int_in_range(1, 11) or {0}) / 10
 							app.seed_map[i][j] = Seed{}
 						}
